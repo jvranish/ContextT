@@ -1,0 +1,6 @@
+
+This is a monad transformer that provides a reference that is similar to the reference for ST monad, though much slower.
+
+This is usefull when you want something like a reference, but the ST monad wont work (like if you want to use it on top of the List monad)
+
+
