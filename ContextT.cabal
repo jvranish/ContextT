@@ -1,0 +1,20 @@
+Name:                ContextT
+Version:             0.1
+Synopsis:            A monad transformer that provides references symatics similar to an STRef
+Description:  
+  A monad transformer that provides references with symatics similar to an STRef. 
+  This monad does not have the performance benefits of the ST monad, but is much more flexible.
+
+Homepage:            https://github.com/jvranish/ContextT
+License:             BSD3
+License-file:        LICENSE
+Author:              Job Vranish
+Maintainer:          jvranish@gmail.com
+Category:            Monads
+Build-type:          Simple
+Cabal-version:       >=1.2
+Library
+  Exposed-modules:     Control.Monad.GraphT, Control.Monad.ContextT
+  Build-depends: base >= 4, containers -any, mtl -any
+  hs-source-dirs: src
+  ghc-options:	-Wall
