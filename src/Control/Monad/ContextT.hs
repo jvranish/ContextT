@@ -37,6 +37,9 @@ runContextT m = unsafeRunContextT m
 unsafeRunContextT :: (Monad m) => ContextT s t m a -> m a
 unsafeRunContextT m = evalStateT (unsafeUnContextT m) (ContextData 0 IntMap.empty IntMap.empty)
 
+mapContextT :: (forall s'. m (a, s') -> n (b, s')) -> ContextT s t m a -> ContextT s t n b
+mapContextT f (UnsafeContextT m) = UnsafeContextT $ mapStateT f m
+
 newRef :: (Monad m) => t -> ContextT s t m (ContextRef s t)
 newRef a = UnsafeContextT $ do
   ContextData n x y <- get

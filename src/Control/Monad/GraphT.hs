@@ -28,6 +28,9 @@ runGraphT m = unsafeRunGraphT m
 unsafeRunGraphT :: (Monad m) => GraphT s f m a -> m a
 unsafeRunGraphT m = ContextT.unsafeRunContextT $ unGraphT m
 
+mapGraphT :: (forall s'. m (a, s') -> n (b, s')) -> GraphT s f m a -> GraphT s f n b
+mapGraphT f (GraphT m) = GraphT $ ContextT.mapContextT f m
+
 newRef :: (Monad m) => f (GraphRef s f) -> GraphT s f m (GraphRef s f)
 newRef a = liftM GraphRef $ GraphT $ ContextT.newRef a
 
