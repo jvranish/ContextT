@@ -14,7 +14,7 @@ import Control.Monad.Cont hiding (mapM_, mapM, forM)
 
 import qualified Control.Monad.ContextT as ContextT
 
-import Prelude hiding (elem, and, concat, mapM, mapM_)
+import Prelude hiding (elem, and, concat, mapM, mapM_, foldr)
 
 
 newtype GraphT s f m a = GraphT { unGraphT :: ContextT.ContextT s (f (GraphRef s f)) m a }
@@ -55,7 +55,12 @@ unsafeCastRef f (GraphRef (ContextT.UnsafeContextRef ref a)) = GraphRef $ Contex
 forkContext :: (Monad m, Functor f, Foldable t, Functor t) => t (GraphRef s f) -> (forall s'. t (GraphRef s' f) -> GraphT s' f m b) -> GraphT s f m b  
 forkContext refs f = forkMappedContext refs id f
   
-  
+oneOf :: (Monad m) => [GraphT s f m (Maybe a)] ->  GraphT s f m (Maybe a)
+oneOf ms = GraphT $ ContextT.UnsafeContextT $ StateT $ \context -> do
+    let onlyOne (Nothing, _) a  = a
+        onlyOne a (Nothing, _) = a
+        onlyOne _ _ = (Nothing, context)
+    return . foldr onlyOne (Nothing, context) =<< mapM (flip runStateT context . ContextT.unsafeUnContextT . unGraphT) ms
 
 -- #TODO  check to see if the f needs to be polymorphic (I think it might need to be.. maybe not)
 --forkMappedContext :: (Monad m, Functor f, Foldable t, Functor t) => t (GraphRef s f) -> (f (GraphRef s' g) -> g (GraphRef s' g)) -> (forall s'. t (GraphRef s' g) -> GraphT s' g m b) -> GraphT s f m b
